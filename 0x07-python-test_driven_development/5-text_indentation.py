@@ -1,19 +1,11 @@
 #!/usr/bin/python3
-"""Text indentations"""
+""" This module provides a function for indenting text. """
 
 
 def text_indentation(text):
-    """Prints a text with 2 new lines
-    Args:
-        text (string): The text to print.
-    Raises:
-        TypeError: If text is not a string.
-
-    """
-    special = ['.', '?', ':']
-    if type(text) != str:
-        raise TypeError("text must be string")
-    for x in text:
-        print(x, end='')
-        if x in special:
-            print('\n\n', end='')
+    """ Print a text with 2 new lines after each of these chars: ., ? and : """
+    if type(text) is not str:
+        raise TypeError("text must be a string")
+    for char in ".:?":
+        text = text.replace(char, char + "\n\n")
+    print(*(ln.strip() for ln in (text + "\n").splitlines()), sep="\n", end="")

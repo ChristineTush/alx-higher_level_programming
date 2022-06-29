@@ -1,40 +1,27 @@
-A test to for the text_indenation function
+Import the function:
+--------------------
+    >>> text_indentation = __import__("5-text_indentation").text_indentation
 
-Import the module
->>> import sys
->>> sys.path.insert(1, '../')
->>> lib = __import__("5-text_indentation")
->>> func = lib.text_indentation
+Now test it:
+------------
+    >>> text_indentation("Text")
+    Text
 
-#Normal addition test
->>> func("Lorem Ipsum.?:")
-Lorem Ipsum.
-<BLANKLINE>
-?
-<BLANKLINE>
-:
-<BLANKLINE>
+    >>> text_indentation("")
+    
+    >>> text_indentation("One. Two? Three: Four")
+    One.
+    <BLANKLINE>
+    Two?
+    <BLANKLINE>
+    Three:
+    <BLANKLINE>
+    Four
 
+    >>> text_indentation(123)
+    Traceback (most recent call last):
+    TypeError: text must be a string
 
-#Type Errors
-
->>> func(4)
-Traceback (most recent call last):
-...
-TypeError: text must be string
->>> func(12.3)
-Traceback (most recent call last):
-...
-TypeError: text must be string
->>> func([])
-Traceback (most recent call last):
-...
-TypeError: text must be string
->>> func({})
-Traceback (most recent call last):
-...
-TypeError: text must be string
->>> func(1j)
-Traceback (most recent call last):
-...
-TypeError: text must be string
+    >>> text_indentation()
+    Traceback (most recent call last):
+    TypeError: text_indentation() missing 1 required positional argument: 'text'
