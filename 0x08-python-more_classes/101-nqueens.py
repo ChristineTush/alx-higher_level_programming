@@ -1,134 +1,82 @@
 #!/usr/bin/python3
-"""Solves the N-queens puzzle.
-Determines all possible solutions to placing N
-N non-attacking queens on an NxN chessboard.
-Example:
-    $ ./101-nqueens.py N
-N must be an integer greater than or equal to 4.
-Attributes:
-    board (list): A list of lists representing the chessboard.
-    solutions (list): A list of lists containing solutions.
-Solutions are represented in the format [[r, c], [r, c], [r, c], [r, c]]
-where `r` and `c` represent the row and column, respectively, where a
-queen must be placed on the chessboard.
+"""Queen Chess challenge
+
 """
+
 import sys
 
+def printSolution(board, n):
+    for row in range(n):
+        print (board[row])
+    print()
 
-def init_board(n):
-    """Initialize an `n`x`n` sized chessboard with 0's."""
-    board = []
-    [board.append([]) for i in range(n)]
-    [row.append(' ') for i in range(n) for row in board]
-    return (board)
-
-
-def board_deepcopy(board):
-    """Return a deepcopy of a chessboard."""
-    if isinstance(board, list):
-        return list(map(board_deepcopy, board))
-    return (board)
-
-
-def get_solution(board):
-    """Return the list of lists representation of a solved chessboard."""
-    solution = []
-    for r in range(len(board)):
-        for c in range(len(board)):
-            if board[r][c] == "Q":
-                solution.append([r, c])
-                break
-    return (solution)
-
-
-def xout(board, row, col):
-    """X out spots on a chessboard.
-    All spots where non-attacking queens can no
-    longer be played are X-ed out.
-    Args:
-        board (list): The current working chessboard.
-        row (int): The row where a queen was last played.
-        col (int): The column where a queen was last played.
+def isSafe(board, row, col, n):
+    """ Found if a position is safe or atacked by other Queen
+    Arguments:
+    board: Position of other queens
+    row: row  position to   analyze
+    col: col position to analyze
+    Return: True if position is safe for a new Queen
     """
-    # X out all forward spots
-    for c in range(col + 1, len(board)):
-        board[row][c] = "x"
-    # X out all backwards spots
-    for c in range(col - 1, -1, -1):
-        board[row][c] = "x"
-    # X out all spots below
-    for r in range(row + 1, len(board)):
-        board[r][col] = "x"
-    # X out all spots above
-    for r in range(row - 1, -1, -1):
-        board[r][col] = "x"
-    # X out all spots diagonally down to the right
-    c = col + 1
-    for r in range(row + 1, len(board)):
-        if c >= len(board):
-            break
-        board[r][c] = "x"
-        c += 1
-    # X out all spots diagonally up to the left
-    c = col - 1
-    for r in range(row - 1, -1, -1):
-        if c < 0:
-            break
-        board[r][c]
-        c -= 1
-    # X out all spots diagonally up to the right
-    c = col + 1
-    for r in range(row - 1, -1, -1):
-        if c >= len(board):
-            break
-        board[r][c] = "x"
-        c += 1
-    # X out all spots diagonally down to the left
-    c = col - 1
-    for r in range(row + 1, len(board)):
-        if c < 0:
-            break
-        board[r][c] = "x"
-        c -= 1
 
+    """ veriying the row on left side """
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
 
-def recursive_solve(board, row, queens, solutions):
-    """Recursively solve an N-queens puzzle.
-    Args:
-        board (list): The current working chessboard.
-        row (int): The current working row.
-        queens (int): The current number of placed queens.
-        solutions (list): A list of lists of solutions.
-    Returns:
-        solutions
+    """ veriying upper diagonal on left side """
+    for i,j in zip(range(row,-1,-1), range(col,-1,-1)):
+        if board[i][j] == 1:
+            return False
+
+    """ veriying upper diagonal on left side """
+    for i,j in zip(range(row, n, 1), range(col,-1,-1)):
+        if board[i][j] == 1:
+            return False
+        return True
+
+def solveNQUtil(board, col, n):
+    """ Found if a queen was placed on the column
+    Arguments:
+    board: Position of other queens
+    col: col position to analyze
+    Return: True if all queens has been placed
+            false if the queen cannot be placed in all the col
     """
-    if queens == len(board):
-        solutions.append(get_solution(board))
-        return (solutions)
 
-    for c in range(len(board)):
-        if board[row][c] == " ":
-            tmp_board = board_deepcopy(board)
-            tmp_board[row][c] = "Q"
-            xout(tmp_board, row, c)
-            solutions = recursive_solve(tmp_board, row + 1,
-                                        queens + 1, solutions)
+    if col >= n:
+        return True
 
-    return (solutions)
+    """ Iter by col tryng to place the Queen row by row"""
+    for i in range(n):
+        if isSafe(board, i, col, n):
+            board[i][col] = 1
+            if solveNQUtil(board, col+1, n) == True:
+                return True
+            board[i][col] = 0
 
+    return False
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-    if sys.argv[1].isdigit() is False:
-        print("N must be a number")
-        sys.exit(1)
-    if int(sys.argv[1]) < 4:
-        print("N must be at least 4")
-        sys.exit(1)
+def solveNQ(n):
+    """ Starting in an empty board, the function look for an arrange
+    of Queens complying the challenge"""
 
-    board = init_board(int(sys.argv[1]))
-    solutions = recursive_solve(board, 0, 0, [])
-    for sol in solutions:
-        print(sol)
+    board = [[0 for x in range(n)] for y in range(n)]
+    if solveNQUtil(board, 0, n) == False:
+        print("Solution does not exist")
+        return False
+    printSolution(board, n)
+    return True
+
+if len(sys.argv) is not 2:
+    print("Usage: nqueens N")
+    exit(1)
+n = int(sys.argv[1])
+print(n)
+#if n is not int:
+#    print("N must be a number")
+#    exit(1)
+if n < 4:
+    print("N must be at least 4")
+    exit(1)
+solveNQ(n)
