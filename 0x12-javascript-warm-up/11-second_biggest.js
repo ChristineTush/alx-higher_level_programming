@@ -1,16 +1,9 @@
 #!/usr/bin/node
+// searches the second biggest integer in the list of arguments.
 
-const { argv } = require('process');
-if (!argv[3]) {
+if (process.argv.length <= 3) {
   console.log(0);
-} else if (argv[2] && argv[3] && argv[2] === argv[3]) {
-  console.log(0);
-} else if (argv[2] && argv[3]) {
-  const unique = [...new Set(argv)];
-  function comparar (a, b) {
-    return (a - b);
-  }
-  unique.sort(comparar);
-  const number = unique.length;
-  console.log(parseInt(unique[number - 2]));
+} else {
+  const list = process.argv.sort();
+  console.log(list.reverse()[1]);
 }

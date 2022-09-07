@@ -1,8 +1,7 @@
 #!/usr/bin/node
+// prints the first argument passed to it
 
-let argsLen = 0;
-process.argv.forEach((element) => { argsLen++; });
-if (argsLen === 2) {
+if (process.argv[2] === undefined) {
   console.log('No argument');
 } else {
   console.log(process.argv[2]);
