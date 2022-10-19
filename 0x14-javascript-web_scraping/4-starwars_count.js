@@ -1,26 +1,24 @@
 #!/usr/bin/node
 
 const request = require('request');
-const args = process.argv.slice(2);
-const url = args[0];
-const options = {
-  url: url,
-  method: 'GET',
-  headers: {
-    Accept: 'application/json',
-    'Accept-Charset': 'utf-8'
-  }
-};
-let myCount = 0;
-request(options, (err, res, body) => {
-  if (err) { throw err; }
-  const count = JSON.parse(body).count;
-  for (let i = 0; i < count; i++) {
-    const myList = JSON.parse(body).results[i].characters;
-    const a = myList.filter(word => word.includes('18'));
-    if (a.length > 0) {
-      myCount++;
+const url = process.argv[2];
+
+request(url, function (err, response, body) {
+  if (err) {
+    console.log(err);
+  } else if (response.statusCode === 200) {
+    const films = JSON.parse(body).results;
+    let count = 0;
+    for (const filmIndex in films) {
+      const filmChars = films[filmIndex].characters;
+      for (const charIndex in filmChars) {
+        if (filmChars[charIndex].includes('18')) {
+          count++;
+        }
+      }
     }
+    console.log(count);
+  } else {
+    console.log('An error occured. Status code: ' + response.statusCode);
   }
-  console.log(myCount);
 });
